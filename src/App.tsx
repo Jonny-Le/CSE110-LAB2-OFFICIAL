@@ -2,54 +2,80 @@ import './App.css';
 import React, { useState } from 'react';
 import { Label, Note } from "./types"; 
 import { dummyNotesList } from './constants';
-import { ClickCounter } from './starterfiles/hooksExercise'; 
+//import { ClickCounter } from './starterfiles/hooksExercise'; 
 
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [notes, setNotes] = useState(dummyNotesList);
+  const initialNote = {
+    id: -1,
+    title: "",
+    content: "",
+    label: Label.other,
+  };
+  const [createNote, setCreateNote] = useState(initialNote);
 
-  const toggleTheme = () => {
-    setIsDarkMode((prevMode) => !prevMode);
+  const createNoteHandler = (event: React.FormEvent) => {
+    event.preventDefault();
+    const newNote = { ...createNote, id: notes.length + 1 };
+    setNotes([newNote, ...notes]);
+    setCreateNote(initialNote);
+  };
+
+  const deleteNoteHandler = (id: number) => {
+    setNotes(notes.filter(note => note.id !== id));
+  };
+
+  const updateNoteHandler = (id: number, field: keyof Note, value: string) => {
+    setNotes(notes.map(note =>
+      note.id === id ? { ...note, [field]: value } : note
+    ));
   };
 
   return (
-    <div className={`app-container ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
-      {/* Note creation form */}
-      <form className="note-form">
+    <div className='app-container'>
+      <form className="note-form" onSubmit={createNoteHandler}>
         <div>
-          <input placeholder="Note Title" />
+          <input
+            placeholder="Note Title"
+            value={createNote.title}
+            onChange={(event) => setCreateNote({ ...createNote, title: event.target.value })}
+            required
+          />
         </div>
         <div>
-          <textarea placeholder="Note Content"></textarea>
+          <textarea
+            placeholder="Note Content"
+            value={createNote.content}
+            onChange={(event) => setCreateNote({ ...createNote, content: event.target.value })}
+            required
+          />
         </div>
         <div>
-          <button type="submit">Create Note</button>
+          <select
+            value={createNote.label}
+            onChange={(event) => setCreateNote({ ...createNote, label: event.target.value as Label })}
+            required
+          >
+            <option value={Label.personal}>Personal</option>
+            <option value={Label.study}>Study</option>
+            <option value={Label.work}>Work</option>
+            <option value={Label.other}>Other</option>
+          </select>
         </div>
+        <div><button type="submit">Create Note</button></div>
       </form>
 
-      {/* Dark mode toggle button placed below the form */}
-      <div className="theme-toggle">
-        <button onClick={toggleTheme}>
-          {isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-        </button>
-      </div>
-
-      {/* Notes grid on the right */}
       <div className="notes-grid">
-        {dummyNotesList.map((note) => (
+        {notes.map((note) => (
           <div key={note.id} className="note-item">
             <div className="notes-header">
-              <button>x</button>
+              <button onClick={() => deleteNoteHandler(note.id)}>x</button>
             </div>
-            <h2>{note.title}</h2>
-            <p>{note.content}</p>
+            <h2 contentEditable onBlur={(event) => updateNoteHandler(note.id, 'title', event.target.innerText)}>{note.title}</h2>
+            <p contentEditable onBlur={(event) => updateNoteHandler(note.id, 'content', event.target.innerText)}>{note.content}</p>
             <p>{note.label}</p>
           </div>
         ))}
-
-        {/* ClickCounter button */}
-        <div className="clickCounter">
-          <ClickCounter />
-        </div>
       </div>
     </div>
   );
