@@ -2,17 +2,20 @@ import './App.css';
 import React, { useState } from 'react';
 import { Label, Note } from "./types"; 
 import { dummyNotesList } from './constants';
-//import { ClickCounter } from './starterfiles/hooksExercise'; 
 
 function App() {
-  const [notes, setNotes] = useState(dummyNotesList);
-  const initialNote = {
+  const [notes, setNotes] = useState<Note[]>(dummyNotesList);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const initialNote: Note = {
     id: -1,
     title: "",
     content: "",
     label: Label.other,
+    isLiked: false,
   };
-  const [createNote, setCreateNote] = useState(initialNote);
+  
+  const [createNote, setCreateNote] = useState<Note>(initialNote);
 
   const createNoteHandler = (event: React.FormEvent) => {
     event.preventDefault();
@@ -31,8 +34,19 @@ function App() {
     ));
   };
 
+  const toggleLikeDislike = (id: number) => {
+    setNotes(notes.map(note =>
+      note.id === id ? { ...note, isLiked: !note.isLiked } : note
+    ));
+  };
+
+  const toggleTheme = () => {
+    setIsDarkMode(prevMode => !prevMode);
+  };
+
   return (
-    <div className='app-container'>
+    <div className={`app-container ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
+      {/* Note creation form */}
       <form className="note-form" onSubmit={createNoteHandler}>
         <div>
           <input
@@ -65,18 +79,38 @@ function App() {
         <div><button type="submit">Create Note</button></div>
       </form>
 
+      {}
       <div className="notes-grid">
-        {notes.map((note) => (
-          <div key={note.id} className="note-item">
-            <div className="notes-header">
-              <button onClick={() => deleteNoteHandler(note.id)}>x</button>
+        {notes
+          .sort((a, b) => {
+            if (a.isLiked && !b.isLiked) return -1; 
+            if (!a.isLiked && b.isLiked) return 1;  
+            return a.id - b.id; 
+          })
+          .map((note) => (
+            <div key={note.id} className="note-item">
+              <div className="notes-header">
+                <button onClick={() => deleteNoteHandler(note.id)}>x</button>
+              </div>
+              <h2 contentEditable onBlur={(event) => updateNoteHandler(note.id, 'title', event.target.innerText)}>
+                {note.title}
+              </h2>
+              <p contentEditable onBlur={(event) => updateNoteHandler(note.id, 'content', event.target.innerText)}>
+                {note.content}
+              </p>
+              <p>{note.label}</p>
+
+              {}
+              <button onClick={() => toggleLikeDislike(note.id)}>
+                {note.isLiked ? "Dislike" : "Like"}
+              </button>
             </div>
-            <h2 contentEditable onBlur={(event) => updateNoteHandler(note.id, 'title', event.target.innerText)}>{note.title}</h2>
-            <p contentEditable onBlur={(event) => updateNoteHandler(note.id, 'content', event.target.innerText)}>{note.content}</p>
-            <p>{note.label}</p>
-          </div>
-        ))}
+          ))}
       </div>
+
+      <button onClick={toggleTheme}>
+        {isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+      </button>
     </div>
   );
 }

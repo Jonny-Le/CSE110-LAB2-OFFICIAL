@@ -5,7 +5,7 @@ body {
 
 .app-container {
   display: grid;
-  grid-template-columns: 300px 1fr; /* Left form area and right grid area */
+  grid-template-columns: 300px 1fr; 
   gap: 20px;
 }
 
@@ -21,7 +21,6 @@ body {
   gap: 20px;
 }
 
-/* Adjust textarea and input styling */
 textarea,
 input {
   border-radius: 5px;
@@ -30,7 +29,6 @@ input {
   font-size: 16px;
 }
 
-/* Styling for the Create Note button */
 .note-form button {
   border-radius: 5px;
   background-color: rgb(64, 154, 184);
@@ -45,9 +43,11 @@ input {
   cursor: pointer;
 }
 
-/* Style for the Dark Mode toggle button */
 .theme-toggle {
-  margin-top: 10px; /* Space between the form and the toggle */
+  position: fixed; 
+  bottom: 20px;   
+  right: 20px;     
+  z-index: 1000;   
 }
 
 .theme-toggle button {
@@ -63,7 +63,6 @@ input {
   background-color: #2980b9;
 }
 
-/* Grid styling for the notes */
 .notes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -71,7 +70,6 @@ input {
   gap: 20px;
 }
 
-/* Individual note item styling */
 .note-item {
   display: flex;
   flex-direction: column;
@@ -83,13 +81,11 @@ input {
   cursor: pointer;
 }
 
-/* Header of the note with a close button */
 .notes-header {
   display: flex;
   justify-content: flex-end;
 }
 
-/* Close button for the note */
 .notes-header button {
   font-size: 16px;
   background: transparent;
@@ -97,9 +93,30 @@ input {
   cursor: pointer;
 }
 
-/* Dark mode styles */
+.light-mode {
+  background-color: lightgrey;
+  color: black;
+}
+
+.light-mode .note-item {
+  background-color: #f9f9f9;
+  color: black;
+}
+
+.light-mode input,
+.light-mode textarea {
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+}
+
+.light-mode .note-form button {
+  background-color: rgb(64, 154, 184);
+  color: white;
+}
+
 .dark-mode {
-  background-color: #333;
+  background-color: black; 
   color: white;
 }
 
@@ -110,11 +127,21 @@ input {
 
 .dark-mode input,
 .dark-mode textarea {
-  background-color: #444;
+  background-color: #333;
   color: white;
   border: 1px solid #888;
 }
 
 .dark-mode .note-form button {
   background-color: rgb(100, 154, 184);
+}
+
+.dark-mode .theme-toggle button {
+  background-color: #555;
+  color: white;
+}
+
+.light-mode .theme-toggle button {
+  background-color: #3498db;
+  color: white;
 }
