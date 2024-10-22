@@ -3,12 +3,15 @@ export enum Label {
     study = 'study',
     work = 'work',
     other = 'other'
-  }
+}
   
-  export interface Note {
+export interface Note {
     id: number;
     title: string;
     content: string;
     label: Label;
     isLiked: boolean;
-  }
+}
+
+export type GroceryItem = { name: string; isPurchased: boolean };
+

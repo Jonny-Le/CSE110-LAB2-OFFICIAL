@@ -14,6 +14,7 @@ export const dummyNotesList = [
         content: "test note 2 content",
         label: Label.personal,
         isLiked: false
+        
     },
     {
         id: 3,
@@ -44,3 +45,10 @@ export const dummyNotesList = [
         isLiked: false
     },
 ]
+
+export const dummyGroceryList = [
+    { name: "Apples", isPurchased: false },
+    { name: "Bananas", isPurchased: false },
+ ]
+ 
+ 
